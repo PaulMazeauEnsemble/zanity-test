@@ -1,7 +1,6 @@
 import { groq } from 'next-sanity'
 import { buildPreviewQuery } from '../app/sanity/client'
 
-// Requête pour récupérer tous les posts avec leurs détails complets
 export const ALL_POSTS_QUERY = groq`*[_type == "post" && defined(slug.current)] | order(publishedAt desc) {
   _id,
   title,
@@ -20,7 +19,6 @@ export const ALL_POSTS_QUERY = groq`*[_type == "post" && defined(slug.current)] 
   }
 }`
 
-// Requête pour récupérer un post spécifique par son slug
 export const getPostQuery = (slug: string, preview: boolean) => groq`
   ${buildPreviewQuery(`_type == "post" && slug.current == "${slug}"`, preview)}[0] {
     _id,

@@ -6,11 +6,6 @@ export function createPreviewHandler() {
       return isPreview(searchParams);
     },
     
-    getPreviewClient: (searchParams?: { preview?: string }) => {
-      const preview = isPreview(searchParams);
-      return getClient(preview);
-    },
-    
     getPreviewQuery: (query: string, searchParams?: { preview?: string }) => {
       const preview = isPreview(searchParams);
       return getClient(preview).fetch(query);
