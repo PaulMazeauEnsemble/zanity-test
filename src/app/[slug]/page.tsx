@@ -4,8 +4,7 @@ import type { SanityImageSource } from "@sanity/image-url/lib/types/types";
 import { client } from "../sanity/client";
 import Link from "next/link";
 import Image from 'next/image';
-import { getPostQuery } from '@/lib/queries'
-import { createPreviewHandler } from '@/hooks/usePreview';
+import { getPost } from '@/lib/queries';
 
 
 const builder = imageUrlBuilder(client);
@@ -18,11 +17,7 @@ export default async function PostPage({
   params: { slug: string };
   searchParams?: { preview?: string };
 }) {
-  const previewHandler = createPreviewHandler();
-  const post = await previewHandler.getPreviewQuery(
-    getPostQuery(params.slug, previewHandler.getPreviewStatus(searchParams)),
-    searchParams
-  );
+  const post = await getPost({ searchParams, params: { slug: params.slug } });
 
   return (
     <main className="container mx-auto min-h-screen max-w-3xl p-8 flex flex-col gap-4">

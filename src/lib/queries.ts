@@ -1,5 +1,15 @@
 import { groq } from 'next-sanity'
 import { buildPreviewQuery } from '../app/sanity/client'
+import { withPreview } from '../hooks/usePreview'
+
+interface Post {
+  _id: string;
+  title: string;
+  slug: { current: string };
+  publishedAt: string;
+  body?: any;
+  image?: any;
+}
 
 export const ALL_POSTS_QUERY = groq`*[_type == "post" && defined(slug.current)] | order(publishedAt desc) {
   _id,
@@ -19,24 +29,25 @@ export const ALL_POSTS_QUERY = groq`*[_type == "post" && defined(slug.current)] 
   }
 }`
 
-export const getPostQuery = (slug: string, preview: boolean) => groq`
-  ${buildPreviewQuery(`_type == "post" && slug.current == "${slug}"`, preview)}[0] {
+export const getPost = withPreview<Post>((preview: boolean) => 
+  buildPreviewQuery(`_type == "post" && slug.current == $slug`, preview) + 
+  `[0] {
     _id,
     title,
     slug,
     publishedAt,
     body,
     image
-  }
-`;
+  }`
+);
 
-export const getPostsQuery = (preview: boolean) => groq`
-  ${buildPreviewQuery(`_type == "post" && defined(slug.current)`, preview)}
-  | order(publishedAt desc)[0...12] {
+export const getPosts = withPreview<Post[]>((preview: boolean) => 
+  buildPreviewQuery(`_type == "post" && defined(slug.current)`, preview) + 
+  `| order(publishedAt desc) {
     _id,
     title,
     slug,
     publishedAt,
     image
-  }
-`; 
+  }`
+);

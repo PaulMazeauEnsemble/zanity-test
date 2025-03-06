@@ -1,14 +1,16 @@
 import { getClient, isPreview } from '@/app/sanity/client';
 
-export function createPreviewHandler() {
-  return {
-    getPreviewStatus: (searchParams?: { preview?: string }) => {
-      return isPreview(searchParams);
-    },
-    
-    getPreviewQuery: (query: string, searchParams?: { preview?: string }) => {
-      const preview = isPreview(searchParams);
-      return getClient(preview).fetch(query);
-    }
+type PreviewProps = {
+  searchParams?: { preview?: string };
+  params?: Record<string, any>;
+};
+
+export function withPreview<T>(
+  query: (preview: boolean) => string
+) {
+  return async function fetchData(props?: PreviewProps): Promise<T> {
+    const preview = isPreview(props?.searchParams);
+    const client = getClient(preview);
+    return client.fetch(query(preview), props?.params);
   };
-} 
+}

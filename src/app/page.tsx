@@ -1,14 +1,12 @@
 import Link from "next/link";
-import { getPostsQuery } from '@/lib/queries';
-import { createPreviewHandler } from '@/hooks/usePreview';
+import { getPosts } from "@/lib/queries";
 
 export default async function IndexPage({
   searchParams,
 }: {
   searchParams?: { preview?: string };
 }) {
-  const previewHandler = createPreviewHandler();
-  const posts = await previewHandler.getPreviewQuery(getPostsQuery(previewHandler.getPreviewStatus(searchParams)), searchParams);
+  const posts = await getPosts({ searchParams });
 
   return (
     <main className="container mx-auto min-h-screen max-w-3xl p-8">
